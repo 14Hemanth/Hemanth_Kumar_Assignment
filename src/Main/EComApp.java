@@ -24,59 +24,78 @@ public class EComApp {
 	public static void main(String[] args) throws IOException {
 		String black = "\u001B[35m";
 		
+		System.out.println("Hello welcome to Ecom  Press "
+				+ "1. New User"
+				+ "2. Existing user");
 		
-		if(UserAuth()) {
 		
-				System.out.println(black+"1. Register Customer.\r\n"
-				+ "2. Create Product.\r\n"
-				+ "3. Delete Product.\r\n"
-				+ "4. Add to cart.\r\n"
-				+ "5. View cart.\r\n"
-				+ "6. Place order.\r\n"
-				+ "7. View Customer Order");
+		int usertype = new Scanner(System.in).nextInt();
 		
-		try (Scanner scanner = new Scanner(System.in)) {
-			int choice = scanner.nextInt();
-			scanner.nextLine();
-			switch (choice) {
-			case 1: {
-				registerCustomer(scanner);
-				break;
-			}
-			case 2: {
-				createProduct(scanner);
-				break;
-			}
-			case 3: {
-				deleteProduct(scanner);
-				break;
-			}
-			case 4: {
-				addtoCart(scanner);
-				break;
-			}
-			case 5: {
-				viewCart(scanner);
-				break;
-			}
-			case 6: {
-				placeOrder(scanner);
-				break;
-			}
-			case 7: {
-				customerOrders(scanner);
-				break;
-			}
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + choice);
-			}
+		if ( usertype == 2) {
+			
+			
+			  if (UserAuth()) {
+				  clearScreen();
+				  System.out.println(black+"1. Register Customer.\r\n"
+							+ "2. Create Product.\r\n"
+							+ "3. Delete Product.\r\n"
+							+ "4. Add to cart.\r\n"
+							+ "5. View cart.\r\n"
+							+ "6. Place order.\r\n"
+							+ "7. View Customer Order");
+					
+					try (Scanner scanner = new Scanner(System.in)) {
+						int choice = scanner.nextInt();
+						scanner.nextLine();
+						switch (choice) {
+						case 1: {
+							registerCustomer(scanner);
+							break;
+						}
+						case 2: {
+							createProduct(scanner);
+							break;
+						}
+						case 3: {
+							deleteProduct(scanner);
+							break;
+						}
+						case 4: {
+							addtoCart(scanner);
+							break;
+						}
+						case 5: {
+							viewCart(scanner);
+							break;
+						}
+						case 6: {
+							placeOrder(scanner);
+							break;
+						}
+						case 7: {
+							customerOrders(scanner);
+							break;
+						}
+						default:
+							throw new IllegalArgumentException("Unexpected value: " + choice);
+						}
+					}
+				  
+			  } else {
+				  System.out.println("Inavid ");
+			  }
+			
+		} else {
+			Scanner scanner = new Scanner(System.in);
+			
+			registerCustomer(scanner);
 		}
+		
+
 	}
-		else {
-			System.out.println("User Authentication failed");
-		}
 		
-}
+		
+
 
 	
 
