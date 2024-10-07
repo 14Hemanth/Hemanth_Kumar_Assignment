@@ -72,6 +72,9 @@ public class EComApp {
 			}
 		}
 	}
+		else {
+			System.out.println("User Authentication failed");
+		}
 		
 }
 
@@ -79,38 +82,40 @@ public class EComApp {
 
 
 
-	private static boolean UserAuth() {
-		System.out.println("Welcomeeee To Ecom/n/n/n/n/n/n");
-		System.out.println("Enter Your user ID :");
-		Scanner scanner = new Scanner(System.in);
-		int UserID = scanner.nextInt();
-		System.out.println("Enter the pass word ");
-		String userPassString = scanner.nextLine();
-		String queryString = "SELECT customer_id , password FROM ecom.customers where customer_id = ?";
-		try(Connection connection = DBConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(queryString)){
-			preparedStatement.setInt(1, UserID);
-			
-		ResultSet resultSet =	preparedStatement.executeQuery();
-		
-		int id = resultSet.getInt(1);
-		String pass = resultSet.getString("password");
-		
-		if(userPassString.equals(pass)){
-			
-			return true;
-		}
-		
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
+	private static boolean UserAuth() throws IOException {
+	    System.out.println("Welcome to Ecom");
+	    System.out.println("Enter Your user ID:");
+	    Scanner scanner = new Scanner(System.in);
+	    int UserID = scanner.nextInt();
+	    System.out.println("Enter the password:");
+	    scanner.nextLine(); // Consume the newline
+	    String userPassString = scanner.nextLine();
+
+	    String queryString = "SELECT password FROM ecom.customers WHERE customer_id = ?";
+	    
+	    try (Connection connection = DBConnection.getConnection();
+	         PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+	        
+	        preparedStatement.setInt(1, UserID);
+	        ResultSet resultSet = preparedStatement.executeQuery();
+	        
+	        if (resultSet.next()) { 
+	            String pass = resultSet.getString("password");
+	            
+	                if (userPassString.equals(pass)) {
+	                return true; 
+	            }
+	        } else {
+	            System.out.println("User ID not found.");
+	        }
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    return false; 
 	}
+
 
 
 
