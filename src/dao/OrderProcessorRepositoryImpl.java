@@ -22,6 +22,7 @@ import Entity.Customer;
 import Entity.Order_Items;
 import Entity.Orders;
 import Entity.Product;
+import Exception.CustomerNotFoundException;
 import Exception.ProductNotFoundException;
 import Util.DBConnection;
 
@@ -50,9 +51,10 @@ public class OrderProcessorRepositoryImpl implements OrderProcessorRepository {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			return false;
 		}
 		
-			return true;
+			
 	}
 
 	@Override
@@ -229,41 +231,56 @@ public class OrderProcessorRepositoryImpl implements OrderProcessorRepository {
 	
 	
 	
-	public boolean productExists(int productID) throws IOException  {
-	    String query = "SELECT COUNT(*) > 0 AS exist FROM ecom.products WHERE product_id = ?";
+	public boolean productExists(int productID) throws IOException, ProductNotFoundException {
+	    String query = "SELECT COUNT(*) AS count FROM ecom.products WHERE product_id = ?";
 
 	    try (Connection connection = DBConnection.getConnection();
 	         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-	         
+
 	        preparedStatement.setInt(1, productID);
 	        ResultSet resultSet = preparedStatement.executeQuery();
 
 	        if (resultSet.next()) {
-	            return resultSet.getBoolean("exist");
+	            int count = resultSet.getInt("count");
+	            if (count == 0) {
+	                throw new ProductNotFoundException("Product does not exist");
+	            }
+	            return true; // Product exists
 	        }
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	        e.printStackTrace(); // Consider logging instead of printing
+	        throw new IOException("Database error occurred", e);
 	    }
-	    return false; 
+
+	    // If no result is found, throw an exception
+	    throw new ProductNotFoundException("Product does not exist");
 	}
+
 	
-	public boolean customerExists(int customerID) throws IOException  {
-	    String query = "SELECT COUNT(*) > 0 AS exist FROM ecom.customers WHERE customer_id = ?";
+	public boolean customerExists(int customerID) throws IOException, CustomerNotFoundException {
+	    String query = "SELECT COUNT(*) AS count FROM ecom.customers WHERE customer_id = ?";
 
 	    try (Connection connection = DBConnection.getConnection();
 	         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-	         
+
 	        preparedStatement.setInt(1, customerID);
 	        ResultSet resultSet = preparedStatement.executeQuery();
 
 	        if (resultSet.next()) {
-	            return resultSet.getBoolean("exist");
+	            int count = resultSet.getInt("count");
+	            if (count == 0) {
+	                throw new CustomerNotFoundException("Customer does not exist");
+	            }
+	            return true; // Customer exists
+	        } else {
+	            throw new CustomerNotFoundException("Customer does not exist");
 	        }
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	        e.printStackTrace();  // Consider using logging instead of printing
+	        throw new IOException("Database error occurred", e);
 	    }
-	    return false; 
 	}
+
 
 	
 	public Product getProductById(int productId) throws IOException {

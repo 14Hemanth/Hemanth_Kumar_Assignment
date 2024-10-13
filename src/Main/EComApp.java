@@ -22,7 +22,7 @@ public class EComApp {
 	
 	private static final OrderProcessorRepositoryImpl repositoryImpl = new OrderProcessorRepositoryImpl();
 	public static void main(String[] args) throws IOException {
-		String black = "\u001B[35m";
+		String black = "\u001B[34m";
 		
 		System.out.println("Hello welcome to Ecom  Press "
 				+ "1. New User"
